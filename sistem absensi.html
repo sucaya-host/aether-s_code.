@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sistem Kontrol Absensi Sekolah dengan Foto</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #222;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    background: rgba(255 255 255 / 0.15);
+    backdrop-filter: blur(12px);
+    padding: 1.5rem 2rem;
+    text-align: center;
+    color: white;
+    box-shadow: 0 4px 20px rgb(0 0 0 / 0.3);
+  }
+  header h1 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 2.5rem;
+    letter-spacing: 1.2px;
+    text-shadow: 0 2px 6px rgb(0 0 0 / 0.6);
+  }
+
+  main {
+    flex-grow: 1;
+    background: white;
+    max-width: 1100px;
+    width: 94%;
+    margin: 2rem auto 3rem;
+    border-radius: 18px;
+    box-shadow: 0 30px 60px rgb(0 0 0 / 0.15);
+    padding: 2rem 2.5rem 3rem 2.5rem;
+  }
+
+  .date-display {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #555;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.05em;
+  }
+
+  .class-selector {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+  }
+  select#classSelect {
+    padding: 0.5rem 1rem;
+    font-size: 1.1rem;
+    border-radius: 12px;
+    border: 2px solid #667eea;
+    width: 260px;
+    font-weight: 600;
+    transition: border-color 0.3s;
+  }
+  select#classSelect:focus {
+    outline: none;
+    border-color: #764ba2;
+    box-shadow: 0 0 10px #764ba2aa;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 14px;
+  }
+
+  thead th {
+    background-color: #f1f3ff;
+    font-weight: 700;
+    font-size: 1rem;
+    color: #333;
+    padding: 1rem 1.2rem;
+    border-radius: 12px;
+    text-align: center;
+    user-select: none;
+  }
+
+  tbody tr {
+    background: #f9faff;
+    border-radius: 14px;
+    box-shadow: 0 10px 20px rgb(118 75 162 / 0.12);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  tbody tr:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 18px 30px rgb(118 75 162 / 0.25);
+  }
+
+  tbody tr td {
+    padding: 0.9rem 1.2rem;
+    font-size: 1rem;
+    color: #2a2a2a;
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
+  }
+  tbody tr td.name-cell {
+    text-align: left;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: #4a2ca2;
+    user-select: text;
+  }
+
+  button.attendance-btn {
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    padding: 0.45rem 1.1rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    font-size: 0.95rem;
+    user-select: none;
+    color: white;
+    min-width: 80px;
+    box-shadow: 0 3px 10px rgb(74 43 162 / 0.3);
+  }
+
+  button.present {
+    background-color: #43b047;
+  }
+  button.present.selected {
+    box-shadow: 0 0 12px 3px #43b047cc;
+  }
+  button.present:hover {
+    background-color: #369235;
+  }
+
+  button.absent {
+    background-color: #db3b39;
+  }
+  button.absent.selected {
+    box-shadow: 0 0 12px 3px #db3b3966;
+  }
+  button.absent:hover {
+    background-color: #a9302e;
+  }
+
+  td.reason-cell {
+    font-style: italic;
+    font-size: 0.9rem;
+    color: #666;
+    max-width: 220px;
+    word-wrap: break-word;
+  }
+
+  td.photo-cell {
+    max-width: 90px;
+    padding: 0.2rem;
+  }
+  td.photo-cell img {
+    max-width: 70px;
+    max-height: 70px;
+    border-radius: 10px;
+    border: 2px solid #4a2ca2;
+    object-fit: cover;
+    cursor: pointer;
+    box-shadow: 0 3px 7px rgb(74 43 162 / 0.35);
+    transition: box-shadow 0.25s ease;
+  }
+  td.photo-cell img:hover {
+    box-shadow: 0 6px 16px rgb(74 43 162 / 0.75);
+  }
+  td.photo-cell .empty-photo {
+    width: 70px;
+    height: 70px;
+    border-radius: 10px;
+    border: 2px dashed #aaa;
+    font-size: 0.7rem;
+    color: #aaa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: border-color 0.25s ease;
+  }
+  td.photo-cell .empty-photo:hover {
+    border-color: #4a2ca2;
+    color: #4a2ca2;
+  }
+
+  .summary {
+    margin-top: 2rem;
+    font-weight: 700;
+    font-size: 1.15rem;
+    text-align: center;
+    color: #4a2ca2;
+    letter-spacing: 0.05em;
+  }
+
+  footer {
+    text-align: center;
+    margin: 2rem 0 1rem 0;
+    color: #ddd;
+    font-size: 0.95rem;
+    font-weight: 600;
+    user-select: none;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+  }
+
+  /* Modal styles */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .modal {
+    background: white;
+    border-radius: 14px;
+    max-width: 440px;
+    width: 90%;
+    padding: 2rem 2.4rem 3rem 2.4rem;
+    box-shadow: 0 20px 50px rgb(0 0 0 / 0.25);
+    text-align: center;
+    font-size: 1rem;
+    user-select: text;
+  }
+  .modal h2 {
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #4a2ca2;
+    font-size: 1.5rem;
+  }
+  .modal textarea {
+    width: 100%;
+    min-height: 90px;
+    border-radius: 12px;
+    border: 1.8px solid #7672e6;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+    resize: vertical;
+    transition: border-color 0.3s ease;
+    box-shadow: inset 0 3px 9px rgb(118 114 230 / 0.25);
+    color: #333;
+  }
+  .modal textarea:focus {
+    border-color: #4a2ca2;
+    outline: none;
+    box-shadow: 0 0 14px #4a2ca277;
+  }
+  .modal-buttons {
+    margin-top: 1.6rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+  }
+  button.modal-btn {
+    flex: 1;
+    padding: 0.7rem 0;
+    font-weight: 700;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-size: 1.05rem;
+    user-select: none;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  button.modal-btn.save {
+    background: #4a2ca2;
+    color: white;
+    box-shadow: 0 6px 20px #4a2ca2b7;
+  }
+  button.modal-btn.save:hover {
+    background: #3d2390;
+    box-shadow: 0 7px 22px #3d2390c7;
+  }
+  button.modal-btn.cancel {
+    background: #ccc;
+    color: #555;
+    box-shadow: 0 6px 20px #99999999;
+  }
+  button.modal-btn.cancel:hover {
+    background: #bbb;
+    box-shadow: 0 7px 22px #777777cc;
+  }
+
+  /* Photo capture modal */
+  #photoModal video {
+    max-width: 100%;
+    border-radius: 14px;
+    background: black;
+  }
+  #photoModal canvas {
+    display: none;
+    max-width: 100%;
+    border-radius: 14px;
+  }
+  #photoModal .controls {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+  #photoModal button {
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+    border-radius: 10px;
+  }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    main {
+      padding: 1.5rem 1.5rem 2rem 1.5rem;
+      width: 100%;
+      max-width: 100%;
+    }
+    thead th {
+      font-size: 0.9rem;
+      padding: 0.7rem 1rem;
+    }
+    tbody tr td {
+      font-size: 0.9rem;
+      padding: 0.5rem 1rem;
+    }
+    button.attendance-btn {
+      padding: 0.4rem 0.9rem;
+      font-size: 0.9rem;
+      min-width: 70px;
+    }
+    td.photo-cell img, td.photo-cell .empty-photo {
+      max-width: 50px;
+      max-height: 50px;
+      font-size: 0.6rem;
+    }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Sistem Kontrol Absensi Sekolah dengan Foto</h1>
+</header>
+<main>
+  <div class="date-display" id="dateDisplay" aria-live="polite" aria-atomic="true"></div>
+  <div class="class-selector">
+    <label for="classSelect" style="color:#4a2ca2;font-weight:600;font-size:1.2rem;margin-right:10px;">Pilih Kelas:</label>
+    <select id="classSelect" aria-label="Pilih Kelas">
+      <!-- Options dynamically inserted -->
+    </select>
+  </div>
+
+  <table aria-label="Daftar Absensi Siswa" id="attendanceTable">
+    <thead>
+      <tr>
+        <th scope="col">No Absen</th>
+        <th scope="col">Nama Siswa</th>
+        <th scope="col">Hadir</th>
+        <th scope="col">Absen</th>
+        <th scope="col">Alasan Absen</th>
+        <th scope="col">Foto Kehadiran</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Rows inserted dynamically -->
+    </tbody>
+  </table>
+
+  <div class="summary" id="summary" aria-live="polite" aria-atomic="true"></div>
+</main>
+
+<footer>
+  &copy; 2024 Sistem Kontrol Absensi Sekolah
+</footer>
+
+<!-- Modal for absence reason input -->
+<div id="modalOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDesc" tabindex="-1" hidden>
+  <div class="modal" role="document">
+    <h2 id="modalTitle">Masukkan Alasan Absen</h2>
+    <textarea id="reasonInput" aria-describedby="modalDesc" placeholder="Contoh: Sakit, ada keperluan keluarga, dsb."></textarea>
+    <div class="modal-buttons">
+      <button class="modal-btn save" id="saveReasonBtn">Simpan</button>
+      <button class="modal-btn cancel" id="cancelReasonBtn">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for photo capture -->
+<div id="photoModalOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="photoModalTitle" aria-describedby="photoModalDesc" tabindex="-1" hidden>
+  <div class="modal" role="document" id="photoModal">
+    <h2 id="photoModalTitle">Ambil Foto Kehadiran</h2>
+    <video autoplay playsinline></video>
+    <canvas></canvas>
+    <div class="modal-buttons controls">
+      <button class="modal-btn save" id="capturePhotoBtn">Ambil Foto</button>
+      <button class="modal-btn save" id="savePhotoBtn" disabled>Simpan Foto</button>
+      <button class="modal-btn cancel" id="cancelPhotoBtn">Batal</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function(){
+    // Classes and students data
+    const classes = {
+      "10-IPA1": [
+        {nomor: 1, name: "Ahmad Fauzi"},
+        {nomor: 2, name: "Siti Aminah"},
+        {nomor: 3, name: "Budi Santoso"},
+        {nomor: 4, name: "Lisa Mariana"},
+        {nomor: 5, name: "Rizky Pratama"}
+      ],
+      "10-IPS1": [
+        {nomor: 1, name: "Nina Lestari"},
+        {nomor: 2, name: "Dedi Kusuma"},
+        {nomor: 3, name: "Intan Permata"},
+        {nomor: 4, name: "Fajar Nugroho"},
+        {nomor: 5, name: "Dewi Anggraini"}
+      ],
+      "11-IPA1": [
+        {nomor: 1, name: "Rama Putra"},
+        {nomor: 2, name: "Putri Anisa"},
+        {nomor: 3, name: "Agus Santoso"},
+        {nomor: 4, name: "Maya Sari"},
+        {nomor: 5, name: "Hendra Wijaya"}
+      ]
+    };
+
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = (today.getMonth()+1).toString().padStart(2,"0");
+    const dd = today.getDate().toString().padStart(2,"0");
+    const todayString = `${yyyy}-${mm}-${dd}`;
+    const dateDisplay = document.getElementById('dateDisplay');
+    dateDisplay.textContent = `Tanggal: ${dd}-${mm}-${yyyy}`;
+
+    const classSelect = document.getElementById('classSelect');
+    const tbody = document.querySelector("#attendanceTable tbody");
+    const summary = document.getElementById('summary');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const reasonInput = document.getElementById('reasonInput');
+    const saveReasonBtn = document.getElementById('saveReasonBtn');
+    const cancelReasonBtn = document.getElementById('cancelReasonBtn');
+
+    // Photo modal elements
+    const photoModalOverlay = document.getElementById('photoModalOverlay');
+    const video = photoModalOverlay.querySelector('video');
+    const canvas = photoModalOverlay.querySelector('canvas');
+    const capturePhotoBtn = document.getElementById('capturePhotoBtn');
+    const savePhotoBtn = document.getElementById('savePhotoBtn');
+    const cancelPhotoBtn = document.getElementById('cancelPhotoBtn');
+
+    let attendanceData = {};
+    let currentClass = null;
+    let currentStudentIndex = null;
+
+    // Stream for webcam
+    let stream = null;
+
+    // Initialize class options
+    function initClassSelect() {
+      for(const cls in classes){
+        const option = document.createElement('option');
+        option.value = cls;
+        option.textContent = cls.replace('-', ' ');
+        classSelect.appendChild(option);
+      }
+    }
+
+    // Load attendance including photo data
+    function loadAttendance(c){
+      attendanceData = {};
+      const students = classes[c] || [];
+      students.forEach((_, i) => {
+        const key = `attendance_${todayString}_${c}_${i}`;
+        const jsonStr = localStorage.getItem(key);
+        if(jsonStr){
+          try {
+            attendanceData[i] = JSON.parse(jsonStr);
+          } catch{}
+        }
+      });
+    }
+
+    // Save attendance including photo data
+    function saveAttendance(c, index, status, reason=null, photo=null){
+      attendanceData[index] = {status, reason, photo};
+      const key = `attendance_${todayString}_${c}_${index}`;
+      localStorage.setItem(key, JSON.stringify(attendanceData[index]));
+      updateSummary();
+      updateRowSelection(index);
+    }
+
+    function updateSummary(){
+      const students = classes[currentClass] || [];
+      let presentCount = 0;
+      let absentCount = 0;
+      let notMarked = students.length;
+
+      for(let i=0;i<students.length;i++){
+        if(attendanceData[i]){
+          notMarked--;
+          if(attendanceData[i].status === 'present') presentCount++;
+          else if(attendanceData[i].status === 'absent') absentCount++;
+        }
+      }
+      summary.textContent = `Hadir: ${presentCount} | Absen: ${absentCount} | Belum diisi: ${notMarked}`;
+    }
+
+    // Update row UI with attendance and photo
+    function updateRowSelection(index){
+      const row = document.querySelector(`#row-${index}`);
+      if(!row) return;
+      const btnPresent = row.querySelector('button.present');
+      const btnAbsent = row.querySelector('button.absent');
+      const reasonCell = row.querySelector('.reason-cell');
+      const photoCell = row.querySelector('.photo-cell');
+      const data = attendanceData[index];
+
+      if(!data){
+        btnPresent.classList.remove('selected');
+        btnAbsent.classList.remove('selected');
+        btnPresent.setAttribute('aria-pressed', 'false');
+        btnAbsent.setAttribute('aria-pressed', 'false');
+        reasonCell.textContent = '';
+        photoCell.innerHTML = `<div class="empty-photo" title="Klik untuk ambil foto">Foto</div>`;
+        addPhotoClick(photoCell, index);
+      } else if(data.status === 'present'){
+        btnPresent.classList.add('selected');
+        btnAbsent.classList.remove('selected');
+        btnPresent.setAttribute('aria-pressed', 'true');
+        btnAbsent.setAttribute('aria-pressed', 'false');
+        reasonCell.textContent = '';
+        if(data.photo){
+          photoCell.innerHTML = `<img src="${data.photo}" alt="Foto hadir siswa" title="Klik untuk update foto" />`;
+          addPhotoClick(photoCell, index);
+        } else {
+          photoCell.innerHTML = `<div class="empty-photo" title="Klik untuk ambil foto">Foto</div>`;
+          addPhotoClick(photoCell, index);
+        }
+      } else if(data.status === 'absent'){
+        btnPresent.classList.remove('selected');
+        btnAbsent.classList.add('selected');
+        btnPresent.setAttribute('aria-pressed', 'false');
+        btnAbsent.setAttribute('aria-pressed', 'true');
+        reasonCell.textContent = data.reason || '-';
+        photoCell.innerHTML = '';
+      }
+    }
+
+    // Add click handler to photo cell or placeholder to open photo modal
+    function addPhotoClick(photoCell, studentIndex){
+      const target = photoCell.firstElementChild;
+      if(!target) return;
+      target.style.cursor = 'pointer';
+      target.onclick = () => {
+        currentStudentIndex = studentIndex;
+        openPhotoModal();
+      };
+    }
+
+    // Create a row for a student with photo cell
+    function createRow(student, index){
+      const tr = document.createElement('tr');
+      tr.id = `row-${index}`;
+
+      const tdNum = document.createElement('td');
+      tdNum.textContent = student.nomor;
+      tdNum.setAttribute('scope','row');
+      tdNum.style.fontWeight = '600';
+      tr.appendChild(tdNum);
+
+      const tdName = document.createElement('td');
+      tdName.textContent = student.name;
+      tdName.className = 'name-cell';
+      tr.appendChild(tdName);
+
+      const tdPresent = document.createElement('td');
+      const btnPresent = document.createElement('button');
+      btnPresent.type = 'button';
+      btnPresent.textContent = 'Hadir';
+      btnPresent.className = 'attendance-btn present';
+      btnPresent.setAttribute('aria-pressed', 'false');
+      btnPresent.addEventListener('click', ()=>{
+        // Mark present but open photo capture modal to add photo
+        currentStudentIndex = index;
+        // Save present without photo temporarily; photo modal save will update photo
+        saveAttendance(currentClass, index, 'present', null, attendanceData[index]?.photo || null);
+        openPhotoModal();
+      });
+      tdPresent.appendChild(btnPresent);
+      tr.appendChild(tdPresent);
+
+      const tdAbsent = document.createElement('td');
+      const btnAbsent = document.createElement('button');
+      btnAbsent.type = 'button';
+      btnAbsent.textContent = 'Absen';
+      btnAbsent.className = 'attendance-btn absent';
+      btnAbsent.setAttribute('aria-pressed','false');
+      btnAbsent.addEventListener('click', ()=>{
+        currentStudentIndex = index;
+        openModal();
+      });
+      tdAbsent.appendChild(btnAbsent);
+      tr.appendChild(tdAbsent);
+
+      const tdReason = document.createElement('td');
+      tdReason.className = 'reason-cell';
+      tdReason.textContent = '';
+      tr.appendChild(tdReason);
+
+      const tdPhoto = document.createElement('td');
+      tdPhoto.className = 'photo-cell';
+      tdPhoto.innerHTML = '';
+      tr.appendChild(tdPhoto);
+
+      return tr;
+    }
+
+    // Render table for selected class
+    function renderTable(c){
+      tbody.innerHTML = '';
+      const students = classes[c] || [];
+      students.forEach((student, i) => {
+        const row = createRow(student, i);
+        tbody.appendChild(row);
+      });
+      students.forEach((_, i) => updateRowSelection(i));
+      updateSummary();
+    }
+
+    // Modal for absence reason input functions
+    function openModal(){
+      modalOverlay.hidden = false;
+      modalOverlay.classList.add('active');
+      reasonInput.value = attendanceData[currentStudentIndex]?.reason || '';
+      reasonInput.focus();
+      document.addEventListener('keydown', handleModalKeydown);
+    }
+    function closeModal(){
+      modalOverlay.hidden = true;
+      modalOverlay.classList.remove('active');
+      reasonInput.value = '';
+      currentStudentIndex = null;
+      document.removeEventListener('keydown', handleModalKeydown);
+    }
+    function handleModalKeydown(e){
+      if(e.key === 'Escape'){
+        e.preventDefault();
+        closeModal();
+      }
+      if(e.key === 'Tab'){
+        const focusable = modalOverlay.querySelectorAll('textarea, button');
+        const first = focusable[0];
+        const last = focusable[focusable.length-1];
+        if(e.shiftKey){
+          if(document.activeElement === first){
+            e.preventDefault();
+            last.focus();
+          }
+        } else {
+          if(document.activeElement === last){
+            e.preventDefault();
+            first.focus();
+          }
+        }
+      }
+    }
+    saveReasonBtn.addEventListener('click', ()=>{
+      const reason = reasonInput.value.trim();
+      if(!reason){
+        alert('Mohon isi alasan absen sebelum menyimpan.');
+        reasonInput.focus();
+        return;
+      }
+      saveAttendance(currentClass,currentStudentIndex, 'absent', reason, null);
+      closeModal();
+    });
+    cancelReasonBtn.addEventListener('click', ()=>{
+      closeModal();
+    });
+
+    // Photo modal functions and variables
+    function openPhotoModal(){
+      photoModalOverlay.hidden = false;
+      photoModalOverlay.classList.add('active');
+      savePhotoBtn.disabled = true;
+      capturePhotoBtn.disabled = false;
+      canvas.style.display = 'none';
+      video.style.display = 'block';
+      startCamera();
+      document.addEventListener('keydown', handlePhotoModalKeydown);
+    }
+
+    function closePhotoModal(){
+      photoModalOverlay.hidden = true;
+      photoModalOverlay.classList.remove('active');
+      stopCamera();
+      document.removeEventListener('keydown', handlePhotoModalKeydown);
+      currentStudentIndex = null;
+    }
+
+    function handlePhotoModalKeydown(e){
+      if(e.key === 'Escape'){
+        e.preventDefault();
+        closePhotoModal();
+      }
+    }
+
+    async function startCamera(){
+      if(stream) return;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({video: {width: 320, height:240}});
+        video.srcObject = stream;
+      } catch (err) {
+        alert('Tidak dapat mengakses kamera. Pastikan izin diberikan dan perangkat mendukung kamera.');
+        closePhotoModal();
+      }
+    }
+    function stopCamera(){
+      if(stream){
+        stream.getTracks().forEach(track => track.stop());
+        stream = null;
+      }
+    }
+
+    capturePhotoBtn.addEventListener('click', ()=>{
+      const ctx = canvas.getContext('2d');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      canvas.style.display = 'block';
+      video.style.display = 'none';
+      savePhotoBtn.disabled = false;
+      capturePhotoBtn.disabled = true;
+    });
+    savePhotoBtn.addEventListener('click', ()=>{
+      const dataUrl = canvas.toDataURL('image/png');
+      // Save photo in attendanceData with existing status & reason
+      const previous = attendanceData[currentStudentIndex] || {};
+      // Ensure status == present when saving photo
+      saveAttendance(currentClass, currentStudentIndex, 'present', previous.reason || null, dataUrl);
+      closePhotoModal();
+    });
+    cancelPhotoBtn.addEventListener('click', ()=>{
+      closePhotoModal();
+    });
+
+    classSelect.addEventListener('change', ()=>{
+      currentClass = classSelect.value;
+      loadAttendance(currentClass);
+      renderTable(currentClass);
+    });
+
+    // Initialization
+    initClassSelect();
+    currentClass = classSelect.value = Object.keys(classes)[0];
+    loadAttendance(currentClass);
+    renderTable(currentClass);
+
+  })();
+</script>
+</body>
+</html>
+
