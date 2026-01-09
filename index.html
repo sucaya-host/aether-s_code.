@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portofolio | I Made Dwi Sucaya Putra</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', Arial, Helvetica, sans-serif;
+            background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+            color: #2d3748;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 1s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><polygon points="50,0 100,50 50,100 0,50" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        header h1 {
+            margin: 0;
+            font-size: 3em;
+            font-weight: 700;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+            letter-spacing: 2px;
+        }
+        header p {
+            margin: 20px 0 0;
+            font-size: 1.4em;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+        section {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+        }
+        h2 {
+            color: #667eea;
+            border-bottom: 4px solid #764ba2;
+            display: inline-block;
+            padding-bottom: 15px;
+            font-size: 2.2em;
+            font-weight: 600;
+            margin-bottom: 40px;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        h2:hover {
+            color: #f093fb;
+        }
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+        h2:hover::after {
+            transform: scaleX(1);
+        }
+        .card {
+            background: linear-gradient(145deg, #ffffff 0%, #f7fafc 100%);
+            padding: 40px;
+            margin-top: 20px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            transition: all 0.4s ease;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+        ul {
+            padding-left: 0;
+            list-style-type: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        ul li {
+            margin-bottom: 15px;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%);
+            border-radius: 10px;
+            position: relative;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        ul li:hover {
+            background: linear-gradient(135deg, #b2f5ea 0%, #81e6d9 100%);
+            transform: translateX(5px);
+        }
+        ul li::before {
+            content: '🚀';
+            position: absolute;
+            left: 10px;
+            top: 15px;
+            font-size: 1.2em;
+        }
+        footer {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin-top: 80px;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="3" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+            opacity: 0.1;
+        }
+        .project {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #fef5e7 0%, #fed7aa 100%);
+            border-radius: 15px;
+            border-left: 6px solid #f093fb;
+            transition: all 0.4s ease;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+        }
+        .project:hover {
+            background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%);
+            transform: translateY(-5px) rotate(1deg);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        .project b {
+            color: #667eea;
+            font-size: 1.3em;
+            display: block;
+            margin-bottom: 10px;
+        }
+        @media (max-width: 1024px) {
+            section {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            ul {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+        }
+        @media (max-width: 768px) {
+            header {
+                padding: 60px 20px;
+            }
+            header h1 {
+                font-size: 2.5em;
+            }
+            header p {
+                font-size: 1.2em;
+            }
+            section {
+                padding: 60px 20px;
+                gap: 20px;
+            }
+            h2 {
+                font-size: 1.8em;
+            }
+            .card {
+                padding: 25px;
+            }
+            ul {
+                grid-template-columns: 1fr;
+            }
+            .project {
+                padding: 20px;
+            }
+        }
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 2em;
+            }
+            header p {
+                font-size: 1em;
+            }
+            section {
+                padding: 40px 15px;
+            }
+            .card {
+                padding: 20px;
+            }
+            footer {
+                padding: 30px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>I Made Dwi Sucaya Putra</h1>
+    <p>Siswa SMP | Teknologi, Coding & Robotika Enthusiast</p>
+</header>
+
+<section>
+    <h2>About Me</h2>
+    <div class="card">
+        <p>Saya adalah siswa SMP yang memiliki minat besar dalam bidang teknologi, pemrograman, dan robotika. Saya aktif mengembangkan berbagai proyek seperti robot pengantar barang, aplikasi kesehatan, sistem absensi, dan robot humanoid.</p>
+    </div>
+</section>
+
+<section>
+    <h2>Skills</h2>
+    <div class="card">
+        <ul>
+            <li>Python</li>
+            <li>HTML, CSS, JavaScript</li>
+            <li>Arduino & ESP32 (ESP32-CAM)</li>
+            <li>Robotika & IoT</li>
+            <li>Web Development</li>
+        </ul>
+    </div>
+</section>
+
+<section>
+    <h2>Projects</h2>
+    <div class="card">
+        <div class="project">
+            <b>QUIKSHIP Robot Pengantar Barang</b>
+            <p>Robot pengantar barang otomatis untuk membantu pengiriman logistik secara efisien dan digabungkan dengan wifi agar jangkauan area lebih banyak.</p>
+        </div>
+        <div class="project">
+            <b>Robot Humanoid</b>
+            <p>Robot dengan kepala, mata, dan mulut yang dapat bergerak serta merespons pertanyaan.</p>
+        </div>
+        <div class="project">
+            <b>Aplikasi Kesehatan</b>
+            <p>Aplikasi untuk memantau kondisi kesehatan seperti suhu tubuh, detak jantung, dan oksigen.</p>
+        </div>
+        <div class="project">
+            <b>Sistem Absensi Web</b>
+            <p>Sistem absensi berbasis web dengan fitur QR Code dan rencana integrasi kamera.</p>
+        </div>
+    </div>
+</section>
+
+<section>
+    <h2>Prestasi & Kegiatan</h2>
+    <div class="card">
+        <ul>
+            <li>Peserta International IT Olympiad (I3O)</li>
+            <li>Ketua / Pengurus Ekstrakurikuler Coding</li>
+            <li>Tim Riset & Pengembangan Teknologi Sekolah</li>
+            <li>Pengembangan robotika dan aplikasi</li>
+        </ul>
+    </div>
+</section>
+
+<section>
+    <h2>Contact</h2>
+    <div class="card">
+        <p>Email: sucayaputra8@gmail.com</p>
+        <p>GitHub: https://github.com/sucaya-host/aether-s_code.</p>
+        <p>Instagram: @dwi_sucaya</p>
+    </div>
+</section>
+
+<footer>
+    <p>© 2026 I Made Dwi Sucaya Putra | Portofolio Teknologi</p>
+</footer>
+
+</body>
+</html>
